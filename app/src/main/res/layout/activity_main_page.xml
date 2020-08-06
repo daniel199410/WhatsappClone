@@ -2,12 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainPageActivity">
-
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    tools:context=".activity.MainPageActivity"
+    style="?android:attr/buttonBarStyle">
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/find_user"
+        android:id="@+id/findUser"
+        style="?android:attr/buttonBarButtonStyle"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/logout"
-        android:id="@+id/logout"/>
+        android:id="@+id/logout"
+        style="?android:attr/buttonBarButtonStyle"/>
 </LinearLayout>

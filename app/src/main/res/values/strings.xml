@@ -5,4 +5,7 @@
     <string name="send_verification_code">Send verification code</string>
     <string name="logout">Logout</string>
     <string name="verify_code">Verify code</string>
+    <string name="find_user">find user</string>
+    <string name="name">name</string>
+    <string name="phone">Phone</string>
 </resources>
