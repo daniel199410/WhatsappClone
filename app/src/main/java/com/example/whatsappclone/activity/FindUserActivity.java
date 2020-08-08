@@ -1,13 +1,11 @@
 package com.example.whatsappclone.activity;
 
 import android.database.Cursor;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,14 +24,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class FindUserActivity extends AppCompatActivity {
 
     private RecyclerView.Adapter<UserListAdapter.UserListViewHolder> mUserListAdapter;
     private List<User> userList, contactList;
 
-    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,15 +64,27 @@ public class FindUserActivity extends AppCompatActivity {
         DatabaseReference mUserDB = FirebaseDatabase.getInstance().getReference().child("user");
         Query query = mUserDB.orderByChild("phone").equalTo(user.getPhone());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()) {
-                    String phone, name;
+                    String phone = "", name = "";
                     for(DataSnapshot child: snapshot.getChildren()) {
-                        phone = Objects.requireNonNull(child.child("phone").getValue()).toString();
-                        name = Objects.requireNonNull(child.child("name").getValue()).toString();
+                        Object nameObj = child.child("name").getValue();
+                        Object phoneObj = child.child("phone").getValue();
+                        if(nameObj != null) {
+                            name = nameObj.toString();
+                        }
+                        if(phoneObj != null) {
+                            phone = phoneObj.toString();
+                        }
                         User mUser = new User(phone, name);
+                        if(name.equals(phone)) {
+                            for(User user : contactList) {
+                                if(user.getPhone().equals(mUser.getPhone())) {
+                                    mUser.setName(user.getName());
+                                }
+                            }
+                        }
                         userList.add(mUser);
                         mUserListAdapter.notifyDataSetChanged();
                         break;

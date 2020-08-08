@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onVerificationFailed(@NonNull FirebaseException e) {
-
+                    System.out.println(e.getMessage());
                 }
 
                 @Override
