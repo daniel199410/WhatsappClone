@@ -52,7 +52,7 @@ public class FindUserActivity extends AppCompatActivity {
                 if(!(phone.charAt(0) == '+')) {
                     phone = isoPrefix + phone;
                 }
-                User user = new User(name, phone);
+                User user = new User(name, phone, "");
                 contactList.add(user);
                 getUserDetails(user);
             }
@@ -77,7 +77,7 @@ public class FindUserActivity extends AppCompatActivity {
                         if(phoneObj != null) {
                             phone = phoneObj.toString();
                         }
-                        User mUser = new User(phone, name);
+                        User mUser = new User(phone, name, child.getKey());
                         if(name.equals(phone)) {
                             for(User user : contactList) {
                                 if(user.getPhone().equals(mUser.getPhone())) {

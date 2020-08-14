@@ -18,4 +18,8 @@
         android:text="@string/logout"
         android:id="@+id/logout"
         style="?android:attr/buttonBarButtonStyle"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/chatList"/>
 </LinearLayout>
