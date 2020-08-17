@@ -9,4 +9,6 @@
     <string name="name">name</string>
     <string name="phone">Phone</string>
     <string name="title">title</string>
+    <string name="message">Message…</string>
+    <string name="chatId">chatId</string>
 </resources>
