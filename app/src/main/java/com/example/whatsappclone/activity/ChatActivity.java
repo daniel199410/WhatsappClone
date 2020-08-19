@@ -1,17 +1,14 @@
 package com.example.whatsappclone.activity;
 
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.whatsappclone.R;
+import com.example.whatsappclone.adapter.MediaAdapter;
 import com.example.whatsappclone.adapter.MessageAdapter;
 import com.example.whatsappclone.model.Message;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,19 +23,29 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 public class ChatActivity extends AppCompatActivity {
 
+    private static final int PICK_IMAGE_INTENT = 1;
+    ArrayList<String> mediaUris;
     ArrayList<Message> messages;
     String chatId;
     DatabaseReference mChatDb;
     RecyclerView.Adapter<MessageAdapter.MessageViewHolder> mChatsAdapter;
-    RecyclerView.LayoutManager mChatsLayoutManager;
+    RecyclerView.Adapter<MediaAdapter.MediaViewHolder> mMediaAdapter;
+    RecyclerView.LayoutManager mChatsLayoutManager, mRecyclerViewLayoutManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
         Button mSendButton = findViewById(R.id.sendButton);
+        Button mAddMedia = findViewById(R.id.addMedia);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             chatId = bundle.getString("chatId");
@@ -50,8 +57,47 @@ public class ChatActivity extends AppCompatActivity {
                 sendMessage();
             }
         });
-        initializeRecyclerView();
+        mAddMedia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openGallery();
+            }
+        });
+        initializeMessagesRecyclerView();
+        initializeMediaRecyclerView();
         getChatMessages();
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        }
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select pictures"), PICK_IMAGE_INTENT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK) {
+            if(requestCode == PICK_IMAGE_INTENT) {
+                if(data != null) {
+                    if(data.getClipData() == null) {
+                        if(data.getData() != null) {
+                            mediaUris.add(data.getData().toString());
+                            mMediaAdapter.notifyDataSetChanged();
+                        }
+                    } else {
+                        for(int i = 0; i < data.getClipData().getItemCount(); i++) {
+                            mediaUris.add(data.getClipData().getItemAt(i).toString());
+                            mMediaAdapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void getChatMessages() {
@@ -109,7 +155,7 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private void initializeRecyclerView() {
+    private void initializeMessagesRecyclerView() {
         messages = new ArrayList<>();
         RecyclerView mChats = findViewById(R.id.messages);
         mChats.setNestedScrollingEnabled(false);
@@ -118,5 +164,16 @@ public class ChatActivity extends AppCompatActivity {
         mChats.setLayoutManager(mChatsLayoutManager);
         mChatsAdapter = new MessageAdapter(messages);
         mChats.setAdapter(mChatsAdapter);
+    }
+
+    private void initializeMediaRecyclerView() {
+        mediaUris = new ArrayList<>();
+        RecyclerView mMedia = findViewById(R.id.mediaList);
+        mMedia.setNestedScrollingEnabled(false);
+        mMedia.setHasFixedSize(false);
+        mRecyclerViewLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
+        mMedia.setLayoutManager(mRecyclerViewLayoutManager);
+        mMediaAdapter = new MediaAdapter(getApplicationContext(), mediaUris);
+        mMedia.setAdapter(mMediaAdapter);
     }
 }

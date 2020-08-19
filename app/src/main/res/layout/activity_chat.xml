@@ -4,35 +4,48 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.ChatActivity">
-
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/messages"
         android:layout_above="@id/sendLayout" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_alignParentBottom="true"
         android:id="@+id/sendLayout">
-
-        <EditText
-            android:layout_weight="0.8"
-            android:layout_width="0dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/messageInput"
-            android:hint="@string/message"
-            android:autofillHints=""
-            android:inputType="text"
-            tools:ignore="Suspicious0dp" />
-
-        <Button
-            android:layout_weight="0.2"
-            android:layout_width="0dp"
+            android:id="@+id/mediaList"/>
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:ignore="Suspicious0dp"
-            android:id="@+id/sendButton" />
+            android:orientation="horizontal">
+            <EditText
+                android:layout_weight="0.8"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/messageInput"
+                android:hint="@string/message"
+                android:autofillHints=""
+                android:inputType="text"
+                tools:ignore="Suspicious0dp" />
+            <Button
+                android:layout_weight="0.2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                tools:ignore="Suspicious0dp"
+                android:text="@string/add_media"
+                android:id="@+id/addMedia" />
+            <Button
+                android:layout_weight="0.2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                tools:ignore="Suspicious0dp"
+                android:text="@string/send"
+                android:id="@+id/sendButton" />
+        </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

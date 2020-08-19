@@ -11,4 +11,7 @@
     <string name="title">title</string>
     <string name="message">Message…</string>
     <string name="chatId">chatId</string>
+    <string name="send">send</string>
+    <string name="add_media">Add media</string>
+    <string name="image_to_upload">Image to Upload</string>
 </resources>
