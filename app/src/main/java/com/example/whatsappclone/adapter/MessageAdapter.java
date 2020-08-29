@@ -3,6 +3,7 @@ package com.example.whatsappclone.adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -11,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.whatsappclone.R;
 import com.example.whatsappclone.model.Message;
+import com.stfalcon.frescoimageviewer.ImageViewer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +35,20 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MessageViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MessageViewHolder holder, final int position) {
         holder.mMessage.setText(messages.get(position).getMessage());
         holder.mSender.setText(messages.get(position).getSenderId());
+        if (messages.get(position).getMediaUrls().isEmpty()) {
+            holder.mViewMedia.setVisibility(View.GONE);
+        }
+        holder.mViewMedia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new ImageViewer.Builder<>(view.getContext(), messages.get(position).getMediaUrls())
+                        .setStartPosition(0)
+                        .show();
+            }
+        });
     }
 
     @Override
@@ -45,13 +58,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
 
     public static class MessageViewHolder extends RecyclerView.ViewHolder {
         private TextView mMessage, mSender;
-        private LinearLayout linearLayout;
-
+        private Button mViewMedia;
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
-            linearLayout = itemView.findViewById(R.id.layout);
             mMessage = itemView.findViewById(R.id.message);
             mSender = itemView.findViewById(R.id.sender);
+            mViewMedia = itemView.findViewById(R.id.viewMedia);
         }
     }
 }
