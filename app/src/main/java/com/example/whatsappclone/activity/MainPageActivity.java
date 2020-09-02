@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.whatsappclone.R;
 import com.example.whatsappclone.adapter.ChatListAdapter;
 import com.example.whatsappclone.model.Chat;
-import com.example.whatsappclone.utils.SendNotification;
+import com.example.whatsappclone.utils.NotificationHandler;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -24,7 +24,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.onesignal.OSNotificationOpenResult;
 import com.onesignal.OneSignal;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,8 +41,8 @@ public class MainPageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        configureOneSignal();
         setContentView(R.layout.activity_main_page);
+        configureOneSignal();
         Fresco.initialize(this);
         Button mLogout = findViewById(R.id.logout);
         Button mFindUser = findViewById(R.id.findUser);
@@ -71,7 +74,9 @@ public class MainPageActivity extends AppCompatActivity {
     }
 
     private void configureOneSignal() {
-        OneSignal.startInit(this).init();
+        OneSignal.startInit(this)
+                .setNotificationOpenedHandler(new NotificationHandler())
+                .init();
         OneSignal.setSubscription(true);
         OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
             @Override
@@ -83,7 +88,6 @@ public class MainPageActivity extends AppCompatActivity {
             }
         });
         OneSignal.setInFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification);
-        new SendNotification("Message", "Heading", "noificationKey");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -124,6 +128,23 @@ public class MainPageActivity extends AppCompatActivity {
 
                 }
             });
+        }
+    }
+
+    class NotificationHandler implements OneSignal.NotificationOpenedHandler {
+        @Override
+        public void notificationOpened(OSNotificationOpenResult result) {
+            try {
+                String chatId = result.notification.payload.additionalData.get("chatId").toString();
+                Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("chatId", chatId);
+                intent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

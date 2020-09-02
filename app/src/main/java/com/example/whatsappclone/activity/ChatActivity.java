@@ -12,6 +12,7 @@ import com.example.whatsappclone.R;
 import com.example.whatsappclone.adapter.MediaAdapter;
 import com.example.whatsappclone.adapter.MessageAdapter;
 import com.example.whatsappclone.model.Message;
+import com.example.whatsappclone.utils.NotificationHandler;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -19,6 +20,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -204,12 +206,43 @@ public class ChatActivity extends AppCompatActivity {
         }
     }
 
-    private void updateDataBaseWithNewMessage(DatabaseReference newMessageDb, Map<String, Object> newMessageMap) {
+    private void updateDataBaseWithNewMessage(final DatabaseReference newMessageDb, final Map<String, Object> newMessageMap) {
         newMessageDb.updateChildren(newMessageMap);
         mMessage.setText(null);
         mediaUris.clear();
         mediaIdList.clear();
         mMediaAdapter.notifyDataSetChanged();
+        String uid = FirebaseAuth.getInstance().getUid();
+        if(uid != null) {
+            FirebaseDatabase.getInstance().getReference().child("user").child(uid).child("chat").child(chatId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    final Object message = newMessageMap.get("text");
+                    final Object creator = newMessageMap.get("creator");
+                    if(snapshot.getValue() != null && message != null && creator != null) {
+                        FirebaseDatabase.getInstance().getReference("user").child(snapshot.getValue().toString()).child("notificationKey").addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if(snapshot.getValue() != null) {
+                                    String notificationKey = snapshot.getValue().toString();
+                                    NotificationHandler.sendNotification(message.toString(), creator.toString(), notificationKey, chatId);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
     }
 
     private void initializeMessagesRecyclerView() {
