@@ -4,8 +4,10 @@ import android.Manifest;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 
 import com.example.whatsappclone.R;
 import com.example.whatsappclone.adapter.ChatListAdapter;
@@ -29,6 +31,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,6 +39,7 @@ public class MainPageActivity extends AppCompatActivity {
 
     RecyclerView.Adapter<ChatListAdapter.ChatListViewHolder> mChatListAdapter;
     private List<Chat> chatList;
+    private Toolbar toolbar;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -44,24 +48,39 @@ public class MainPageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_page);
         configureOneSignal();
         Fresco.initialize(this);
-        Button mLogout = findViewById(R.id.logout);
         FloatingActionButton mFindUser = findViewById(R.id.findUser);
         chatList = new ArrayList<>();
-        mLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                logOut();
-            }
-        });
         mFindUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getApplicationContext(), FindUserActivity.class));
             }
         });
+        setDefaultToolbar();
         getPermissions();
         initializeRecyclerView();
         getUserChats();
+    }
+
+    private void setDefaultToolbar() {
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.activity_main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_log_out) {
+            logOut();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void logOut() {

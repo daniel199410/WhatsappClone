@@ -1,18 +1,18 @@
 <resources>
-    <string name="app_name">WhatsappClone</string>
-    <string name="enter_phone_number">Enter phone number</string>
-    <string name="enter_code">Enter code</string>
-    <string name="send_verification_code">Send verification code</string>
-    <string name="logout">Logout</string>
-    <string name="verify_code">Verify code</string>
-    <string name="find_user">find user</string>
-    <string name="name">name</string>
-    <string name="phone">Phone</string>
-    <string name="title">title</string>
-    <string name="message">Message…</string>
+    <string name="app_name">D2</string>
+    <string name="enter_phone_number">Ingresa tu número de teléfono</string>
+    <string name="enter_code">Ingresa el código de verificación</string>
+    <string name="send_verification_code">Enviar código de verificación</string>
+    <string name="logout">Cerrar Sesión</string>
+    <string name="verify_code">Verificar código</string>
+    <string name="find_user">fEncontrar usuario</string>
+    <string name="name">Nombre</string>
+    <string name="phone">Teléfono</string>
+    <string name="title">Título</string>
+    <string name="message">Mensaje…</string>
     <string name="chatId">chatId</string>
-    <string name="send">send</string>
-    <string name="add_media">Add media</string>
-    <string name="image_to_upload">Image to Upload</string>
-    <string name="view_media">View media</string>
+    <string name="send">Enviar</string>
+    <string name="add_media">Agregar fotos</string>
+    <string name="image_to_upload">Imagen a subir</string>
+    <string name="view_media">Ver fotos</string>
 </resources>
