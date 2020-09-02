@@ -1,3 +1,17 @@
+buildscript {
+    repositories {
+        maven { url 'https://plugins.gradle.org/m2/'}
+    }
+    dependencies {
+        classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:0.12.8'
+    }
+}
+apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
+
+repositories {
+    maven { url 'https://maven.google.com' }
+}
+
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
@@ -13,6 +27,10 @@ android {
         versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [
+            onesignal_app_id: 'bd35c169-8018-44f6-86f9-c1ab2aa6c008',
+            onesignal_google_project_number: 'REMOTE'
+        ]
     }
 
     buildTypes {
@@ -40,4 +58,5 @@ dependencies {
     implementation 'com.github.stfalcon:frescoimageviewer:0.5.0'
     implementation 'com.google.firebase:firebase-analytics:17.5.0'
     implementation 'com.google.firebase:firebase-crashlytics:17.2.1'
+    implementation 'com.onesignal:OneSignal:3.15.3'
 }

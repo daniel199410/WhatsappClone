@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.whatsappclone.R;
 import com.example.whatsappclone.adapter.ChatListAdapter;
 import com.example.whatsappclone.model.Chat;
+import com.example.whatsappclone.utils.SendNotification;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -23,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.onesignal.OneSignal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +38,7 @@ public class MainPageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        configureOneSignal();
         setContentView(R.layout.activity_main_page);
         Fresco.initialize(this);
         Button mLogout = findViewById(R.id.logout);
@@ -44,11 +47,7 @@ public class MainPageActivity extends AppCompatActivity {
         mLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-                finish();
+                logOut();
             }
         });
         mFindUser.setOnClickListener(new View.OnClickListener() {
@@ -60,6 +59,31 @@ public class MainPageActivity extends AppCompatActivity {
         getPermissions();
         initializeRecyclerView();
         getUserChats();
+    }
+
+    private void logOut() {
+        OneSignal.setSubscription(false);
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+    }
+
+    private void configureOneSignal() {
+        OneSignal.startInit(this).init();
+        OneSignal.setSubscription(true);
+        OneSignal.idsAvailable(new OneSignal.IdsAvailableHandler() {
+            @Override
+            public void idsAvailable(String userId, String registrationId) {
+                String uid = FirebaseAuth.getInstance().getUid();
+                if(uid != null) {
+                    FirebaseDatabase.getInstance().getReference().child("user").child(uid).child("notificationKey").setValue(userId);
+                }
+            }
+        });
+        OneSignal.setInFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification);
+        new SendNotification("Message", "Heading", "noificationKey");
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
