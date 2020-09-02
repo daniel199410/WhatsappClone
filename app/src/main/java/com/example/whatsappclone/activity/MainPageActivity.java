@@ -7,17 +7,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.whatsappclone.R;
 import com.example.whatsappclone.adapter.ChatListAdapter;
 import com.example.whatsappclone.model.Chat;
-import com.example.whatsappclone.utils.NotificationHandler;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,6 +26,12 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 public class MainPageActivity extends AppCompatActivity {
 
     RecyclerView.Adapter<ChatListAdapter.ChatListViewHolder> mChatListAdapter;
@@ -45,7 +45,7 @@ public class MainPageActivity extends AppCompatActivity {
         configureOneSignal();
         Fresco.initialize(this);
         Button mLogout = findViewById(R.id.logout);
-        Button mFindUser = findViewById(R.id.findUser);
+        FloatingActionButton mFindUser = findViewById(R.id.findUser);
         chatList = new ArrayList<>();
         mLogout.setOnClickListener(new View.OnClickListener() {
             @Override
