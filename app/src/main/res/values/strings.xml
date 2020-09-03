@@ -15,4 +15,5 @@
     <string name="add_media">Agregar fotos</string>
     <string name="image_to_upload">Imagen a subir</string>
     <string name="view_media">Ver fotos</string>
+    <string name="my_chats">Mis chats</string>
 </resources>

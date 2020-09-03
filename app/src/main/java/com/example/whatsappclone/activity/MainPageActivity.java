@@ -26,6 +26,7 @@ import com.onesignal.OneSignal;
 import org.json.JSONException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -135,9 +136,28 @@ public class MainPageActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.exists()) {
-                        for(DataSnapshot child : snapshot.getChildren()) {
-                            chatList.add(new Chat(child.getKey()));
-                            mChatListAdapter.notifyDataSetChanged();
+                        for(final DataSnapshot child : snapshot.getChildren()) {
+                            Object userId = child.getValue();
+                            if(userId != null) {
+                                FirebaseDatabase.getInstance().getReference().child("user").child(userId.toString()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        Object userName = snapshot.child("name").getValue();
+                                        if(userName != null) {
+                                            Chat chat = new Chat(child.getKey(), userName.toString());
+                                            if(!chatList.contains(chat)) {
+                                                chatList.add(chat);
+                                                mChatListAdapter.notifyDataSetChanged();
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+                            }
                         }
                     }
                 }
