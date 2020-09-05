@@ -1,17 +1,23 @@
 package com.example.whatsappclone.adapter;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.net.Uri;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.whatsappclone.R;
 import com.example.whatsappclone.model.Message;
+import com.google.firebase.auth.FirebaseAuth;
 import com.stfalcon.frescoimageviewer.ImageViewer;
 
 import java.util.ArrayList;
@@ -37,18 +43,27 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
     @Override
     public void onBindViewHolder(@NonNull MessageViewHolder holder, final int position) {
         holder.mMessage.setText(messages.get(position).getMessage());
-        holder.mSender.setText(messages.get(position).getSenderId());
         if (messages.get(position).getMediaUrls().isEmpty()) {
             holder.mViewMedia.setVisibility(View.GONE);
+        } else {
+            Glide.with(holder.mContext).load(Uri.parse(messages.get(position).getMediaUrls().get(0))).into(holder.mViewMedia);
+            holder.mViewMedia.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    new ImageViewer.Builder<>(view.getContext(), messages.get(position).getMediaUrls())
+                            .setStartPosition(0)
+                            .show();
+                }
+            });
         }
-        holder.mViewMedia.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new ImageViewer.Builder<>(view.getContext(), messages.get(position).getMediaUrls())
-                        .setStartPosition(0)
-                        .show();
-            }
-        });
+        String senderId = messages.get(position).getSenderId();
+        String uid = FirebaseAuth.getInstance().getUid();
+        if (uid != null && uid.equals(senderId)) {
+            holder.mLinearLayout.setGravity(Gravity.END);
+        } else {
+            holder.mLinearLayout.setGravity(Gravity.START);
+            holder.mItemMessageContainerLayout.setBackgroundColor(holder.mResources.getColor(R.color.colorDivider));
+        }
     }
 
     @Override
@@ -56,14 +71,31 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MessageV
         return messages.size();
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
     public static class MessageViewHolder extends RecyclerView.ViewHolder {
-        private TextView mMessage, mSender;
-        private Button mViewMedia;
+        private TextView mMessage;
+        private ImageButton mViewMedia;
+        private LinearLayout mLinearLayout, mItemMessageContainerLayout;
+        private Resources mResources;
+        private Context mContext;
+
         public MessageViewHolder(@NonNull View itemView) {
             super(itemView);
             mMessage = itemView.findViewById(R.id.message);
-            mSender = itemView.findViewById(R.id.sender);
-            mViewMedia = itemView.findViewById(R.id.viewMedia);
+            mResources = itemView.getResources();
+            mViewMedia = itemView.findViewById(R.id.imageMessage);
+            mLinearLayout = itemView.findViewById(R.id.itemMessageLayout);
+            mItemMessageContainerLayout = itemView.findViewById(R.id.itemMessageContainerLayout);
+            mContext = itemView.getContext();
         }
     }
 }

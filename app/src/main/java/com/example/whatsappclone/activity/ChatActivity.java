@@ -33,15 +33,18 @@ import java.util.Map;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ChatActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_INTENT = 1;
+    private Toolbar toolbar;
     ArrayList<String> mediaUris;
     ArrayList<Message> messages;
     String chatId;
+    String name;
     DatabaseReference mChatDb;
     RecyclerView.Adapter<MessageAdapter.MessageViewHolder> mChatsAdapter;
     RecyclerView.Adapter<MediaAdapter.MediaViewHolder> mMediaAdapter;
@@ -57,6 +60,7 @@ public class ChatActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             chatId = bundle.getString("chatId");
+            name = bundle.getString("name");
         }
         mChatDb = FirebaseDatabase.getInstance().getReference().child("chat").child(chatId);
         mSendButton.setOnClickListener(new View.OnClickListener() {
@@ -71,10 +75,18 @@ public class ChatActivity extends AppCompatActivity {
                 openGallery();
             }
         });
+        setDefaultToolbar();
         initializeMessagesRecyclerView();
         initializeMediaRecyclerView();
         getChatMessages();
     }
+
+    private void setDefaultToolbar() {
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(name);
+        setSupportActionBar(toolbar);
+    }
+
 
     private void openGallery() {
         Intent intent = new Intent();
@@ -253,6 +265,7 @@ public class ChatActivity extends AppCompatActivity {
         mChatsLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         mChats.setLayoutManager(mChatsLayoutManager);
         mChatsAdapter = new MessageAdapter(messages);
+        mChatsAdapter.setHasStableIds(true);
         mChats.setAdapter(mChatsAdapter);
     }
 
