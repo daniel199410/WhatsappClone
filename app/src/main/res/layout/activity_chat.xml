@@ -23,7 +23,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
             <EditText
                 android:layout_weight="0.8"
                 android:layout_width="0dp"
@@ -33,20 +35,32 @@
                 android:autofillHints=""
                 android:inputType="text"
                 tools:ignore="Suspicious0dp" />
-            <Button
+
+            <ImageButton
                 android:layout_weight="0.2"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 tools:ignore="Suspicious0dp"
                 android:text="@string/add_media"
-                android:id="@+id/addMedia" />
-            <Button
+                android:id="@+id/addMedia"
+                android:src="@drawable/ic_outline_image_24"
+                android:tint="@color/colorDivider"
+                android:background="@color/colorPrimaryDark"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp" />
+
+            <ImageButton
                 android:layout_weight="0.2"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 tools:ignore="Suspicious0dp"
                 android:text="@string/send"
-                android:id="@+id/sendButton" />
+                android:id="@+id/sendButton"
+                android:src="@drawable/ic_baseline_send_24"
+                android:tint="@color/colorDivider"
+                android:background="@color/colorPrimaryDark"
+                android:layout_marginEnd="8dp"
+                android:layout_marginRight="8dp" />
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

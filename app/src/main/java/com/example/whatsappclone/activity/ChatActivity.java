@@ -5,8 +5,15 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.whatsappclone.R;
 import com.example.whatsappclone.adapter.MediaAdapter;
@@ -30,13 +37,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 public class ChatActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_INTENT = 1;
@@ -55,8 +55,8 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
-        Button mSendButton = findViewById(R.id.sendButton);
-        Button mAddMedia = findViewById(R.id.addMedia);
+        ImageButton mSendButton = findViewById(R.id.sendButton);
+        ImageButton mAddMedia = findViewById(R.id.addMedia);
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             chatId = bundle.getString("chatId");
